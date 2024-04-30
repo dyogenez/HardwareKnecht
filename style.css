@@ -1,0 +1,5 @@
+#cameraOutput {
+    width: 640px; 
+    height: 480px;
+    object-fit: cover;  
+}

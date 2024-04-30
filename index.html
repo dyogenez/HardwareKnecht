@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Hardware Check</title>
+<style>
+    button:disabled {
+        opacity: 0.5;
+    }
+    #cameraOutput {
+        width: 640px;  
+        height: 480px;
+        object-fit: cover; 
+    }
+    </style>
+<style>
+button:disabled {
+    opacity: 0.5;
+}
+</style>
+</head>
+<body>
+<h1>Hardware Check</h1>
+<!-- Kameratest -->
+<select id="cameraSelect"></select>
+<button id="startCamera">Kameratest starten</button>
+<video id="cameraOutput" autoplay playsinline></video>
+
+<!-- Mikrofontest -->
+<select id="microphoneSelect"></select>
+<button id="startRecording" onclick="startRecording()">Aufnahme starten</button>
+<button id="stopRecording" onclick="stopRecording()" disabled>Aufnahme stoppen</button>
+<audio id="audioOutput" controls></audio>
+<canvas id="microphoneOutput" width="300" height="50"></canvas>
+
+
+<!-- Weitere Tests -->
+<button onclick="testSpeakers()">Lautsprechertest</button>
+<div id="speakersOutput"></div>
+<button onclick="testKeyboard()">Tastaturtest</button>
+<div id="keyboardOutput"></div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
