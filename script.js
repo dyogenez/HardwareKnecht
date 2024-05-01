@@ -23,31 +23,31 @@ document.getElementById('startCamera').addEventListener('click', function() {
 });
 
 
-
 function showSection(sectionId) {
     const sections = document.querySelectorAll('.testSection');
-    sections.forEach(section => section.style.display = 'none');
+    sections.forEach(section => {
+        section.style.display = 'none';
+    });
 
     const activeSection = document.getElementById(sectionId);
     activeSection.style.display = 'block';
-    currentTab = sectionId; // Setze den aktuellen Tab
 
+    // Sorgt dafür, dass Tastatureingaben nur im Keyboard-Tab registriert werden
     if (sectionId === 'keyboard') {
         document.addEventListener('keydown', handleKeyDown);
     } else {
         document.removeEventListener('keydown', handleKeyDown);
     }
-
-    // Spezielle Logik für Mikrofon und Kamera
-    if (sectionId === 'microphone') {
-        document.getElementById('microphoneOutput').style.display = 'block';
-        updateAudioInput();
-    }
 }
 
+
+
 function handleKeyDown(e) {
-    const keyElement = document.querySelector(`.key[data-key="${e.code}"]`);
-    if (keyElement) keyElement.classList.add('active');
+    const key = e.key.toUpperCase();
+    const keyElement = document.querySelector(`.key[data-key="${key}"]`);
+    if (keyElement) {
+        keyElement.classList.add('active');
+    }
 }
 
 // Rufe showSection initial auf, um den Start-Tab festzulegen
