@@ -114,11 +114,18 @@
         opacity: 0.5; /* Halbtransparent, wenn deaktiviert */
         cursor: not-allowed; /* Cursor zeigt 'nicht erlaubt' Zeichen */
     }
+    #overlayImage {
+    
+        margin-top: -77px;
+        z-index: -1; /* Stelle sicher, dass das Bild über dem Text liegt */
+        opacity: 1; /* Anpassen der Transparenz nach Bedarf */
+    }
     
  
 </style>
 </head>
 <body>
+    <img id="overlayImage" src="NichtAobis.png" alt="Overlay Image">
 <h1>Hardware Check</h1>
 
 <div id="nav">
