@@ -4,43 +4,260 @@
 <meta charset="UTF-8">
 <title>Hardware Check</title>
 <style>
+    body {
+        font-family: "Benton Sans", sans-serif; /* Verwendung einer modernen Schriftart */
+        background-color: #1f2021; /* Dunkler Hintergrund für alle Seiten */
+        color: white; /* Text in Weiß für guten Kontrast */
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    h1 {
+        color: white; /* Titelfarbe */
+        padding: 20px;
+    }
+    
+    #nav button {
+        background-color: #ff6700; /* Hauptfarbe für Buttons */
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        margin: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    #nav button:hover {
+        background-color: #e65c00; /* Dunklerer Ton beim Hover */
+    }
+    
+    .testSection {
+        display: none; /* Initial nicht sichtbar */
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        width: 80%;
+        max-width: 800px;
+        background: #282c34; /* Dunkles Thema für Sektionen */
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+    
+    #keyboard {
+        display: none; /* Nur im Keyboard-Tab sichtbar */
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+    }
+    
+    .key {
+        background-color: white;
+        color: black;
+        border: 1px solid #ccc;
+        padding: 10px 15px;
+        margin: 5px;
+        border-radius: 3px;
+        cursor: pointer;
+        user-select: none;
+        transition: transform 0.1s, background-color 0.3s;
+    }
+    
+    .key.active {
+        transform: scale(0.95);
+        background-color: #ff6700; /* Orange für aktive Tasten */
+        color: white;
+    }
+    
+    .keyboardRow {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .largeKey {
+        flex-grow: 2;
+    }
+    
+    #cameraOutput {
+        width: 640px;
+        height: 480px;
+        object-fit: cover;
+    }
+
+    #audioOutput {
+        width: 100%; /* Vollbreite für den Audio-Player */
+        background-color: #ff6700; /* Orange Hintergrund */
+        border: none;
+        outline: none;
+        height: 20px;
+        border-radius: 10px;
+    }
+    
+    #audioOutput::-webkit-media-controls-panel {
+        background-color: #ff6700; /* Stil für den Audio Player */
+        color: white;
+    }
+    
+    #audioOutput::-webkit-media-controls-play-button,
+    #audioOutput::-webkit-media-controls-volume-slider-container,
+    #audioOutput::-webkit-media-controls-mute-button,
+    #audioOutput::-webkit-media-controls-timeline-container {
+        color: white;
+    }
+    
     button:disabled {
         opacity: 0.5;
+        cursor: not-allowed;
     }
-    #cameraOutput {
-        width: 640px;  
-        height: 480px;
-        object-fit: cover; 
-    }
-    </style>
-<style>
-button:disabled {
-    opacity: 0.5;
-}
+ 
 </style>
 </head>
 <body>
 <h1>Hardware Check</h1>
+
+<div id="nav">
+    <button onclick="showSection('camera')">Kameratest</button>
+    <button onclick="showSection('microphone')">Mikrofontest</button>
+    <button onclick="showSection('speakers')">Lautsprechertest</button>
+    <button onclick="showSection('keyboard')">Tastaturtest</button>
+</div>
+
 <!-- Kameratest -->
-<select id="cameraSelect"></select>
-<button id="startCamera">Kameratest starten</button>
-<video id="cameraOutput" autoplay playsinline></video>
+<div id="camera" class="testSection">
+    <select id="cameraSelect"></select>
+    <button id="startCamera">Kameratest starten</button>
+    <video id="cameraOutput" autoplay playsinline></video>
+</div>
 
 <!-- Mikrofontest -->
-<select id="microphoneSelect"></select>
-<button id="startRecording" onclick="startRecording()">Aufnahme starten</button>
-<button id="stopRecording" onclick="stopRecording()" disabled>Aufnahme stoppen</button>
-<audio id="audioOutput" controls></audio>
-<canvas id="microphoneOutput" width="300" height="50"></canvas>
+<div id="microphone" class="testSection">
+    <select id="microphoneSelect"></select>
+    <div id="controls">
+        <button id="startRecording" onclick="startRecording()">Aufnahme starten</button>
+        <button id="stopRecording" onclick="stopRecording()" disabled>Aufnahme stoppen</button>
+    </div>
+    <div id="audioSection">
+        <audio id="audioOutput" controls></audio>
+    </div>
+    <canvas id="microphoneOutput" width="300" height="50"></canvas>
+</div>
+
+
+<!-- Tastaturtest -->
+<div id="keyboard" class="testSection">
+    <h2>Tastaturtest</h2>
+        <!-- Oberste Reihe: Funktionstasten -->
+        <div class="keyboardRow">
+            <button class="key" data-key="Escape">Esc</button>
+            <button class="key" data-key="F1">F1</button>
+            <button class="key" data-key="F2">F2</button>
+            <button class="key" data-key="F3">F3</button>
+            <button class="key" data-key="F4">F4</button>
+            <button class="key" data-key="F5">F5</button>
+            <button class="key" data-key="F6">F6</button>
+            <button class="key" data-key="F7">F7</button>
+            <button class="key" data-key="F8">F8</button>
+            <button class="key" data-key="F9">F9</button>
+            <button class="key" data-key="F10">F10</button>
+            <button class="key" data-key="F11">F11</button>
+            <button class="key" data-key="F12">F12</button>
+        </div>
+        
+        <!-- Zweite Reihe: Nummern und Sonderzeichen -->
+        <div class="keyboardRow">
+            <button class="key" data-key="Backquote">~</button>
+            <button class="key" data-key="Digit1">1</button>
+            <button class="key" data-key="Digit2">2</button>
+            <button class="key" data-key="Digit3">3</button>
+            <button class="key" data-key="Digit4">4</button>
+            <button class="key" data-key="Digit5">5</button>
+            <button class="key" data-key="Digit6">6</button>
+            <button class="key" data-key="Digit7">7</button>
+            <button class="key" data-key="Digit8">8</button>
+            <button class="key" data-key="Digit9">9</button>
+            <button class="key" data-key="Digit0">0</button>
+            <button class="key" data-key="Minus">-</button>
+            <button class="key" data-key="Equal">+</button>
+            <button class="key largeKey" data-key="Backspace">Backspace</button>
+        </div>
+        
+        <!-- Dritte Reihe: Hauptbuchstaben -->
+        <div class="keyboardRow">
+            <button class="key" data-key="Tab">Tab</button>
+            <button class="key" data-key="KeyQ">Q</button>
+            <button class="key" data-key="KeyW">W</button>
+            <button class="key" data-key="KeyE">E</button>
+            <button class="key" data-key="KeyR">R</button>
+            <button class="key" data-key="KeyT">T</button>
+            <button class="key" data-key="KeyY">Y</button>
+            <button class="key" data-key="KeyU">U</button>
+            <button class="key" data-key="KeyI">I</button>
+            <button class="key" data-key="KeyO">O</button>
+            <button class="key" data-key="KeyP">P</button>
+            <button class="key" data-key="BracketLeft">{</button>
+            <button class="key" data-key="BracketRight">}</button>
+            <button class="key" data-key="Backslash">\\</button>
+        </div>
+        
+        <!-- Vierte Reihe: Shift und Buchstaben -->
+        <div class="keyboardRow">
+            <button class="key largeKey" data-key="CapsLock">Caps</button>
+            <button class="key" data-key="KeyA">A</button>
+            <button class="key" data-key="KeyS">S</button>
+            <button class="key" data-key="KeyD">D</button>
+            <button class="key" data-key="KeyF">F</button>
+            <button class="key" data-key="KeyG">G</button>
+            <button class="key" data-key="KeyH">H</button>
+            <button class="key" data-key="KeyJ">J</button>
+            <button class="key" data-key="KeyK">K</button>
+            <button class="key" data-key="KeyL">L</button>
+            <button class="key" data-key="Semicolon">;</button>
+            <button class="key" data-key="Quote">'</button>
+            <button class="key largeKey" data-key="Enter">Enter</button>
+        </div>
+        
+        <!-- Fünfte Reihe: Steuerungstasten -->
+        <div class="keyboardRow">
+            <button class="key" data-key="ShiftLeft">Shift</button>
+            <button class="key" data-key="KeyZ">Z</button>
+            <button class="key" data-key="KeyX">X</button>
+            <button class="key" data-key="KeyC">C</button>
+            <button class="key" data-key="KeyV">V</button>
+            <button class="key" data-key="KeyB">B</button>
+            <button class="key" data-key="KeyN">N</button>
+            <button class="key" data-key="KeyM">M</button>
+            <button class="key" data-key="Comma">,</button>
+            <button class="key" data-key="Period">.</button>
+            <button class="key" data-key="Slash">/</button>
+            <button class="key" data-key="ShiftRight">Shift</button>
+        </div>
+        
+        <!-- Letzte Reihe: Leertaste und weitere Steuerungstasten -->
+        <div class="keyboardRow">
+            <button class="key" data-key="ControlLeft">Ctrl</button>
+            <button class="key" data-key="MetaLeft">Win</button>
+            <button class="key" data-key="AltLeft">Alt</button>
+            <button class="key largeKey" data-key="Space">Spacebar</button>
+            <button class="key" data-key="AltRight">Alt</button>
+            <button class="key" data-key="MetaRight">Win</button>
+            <button class="key" data-key="ContextMenu">Menu</button>
+            <button class="key" data-key="ControlRight">Ctrl</button>
+        </div>
+    </div>
+
+
 
 
 <!-- Weitere Tests -->
-<button onclick="testSpeakers()">Lautsprechertest</button>
-<div id="speakersOutput"></div>
-<button onclick="testKeyboard()">Tastaturtest</button>
-<div id="keyboardOutput"></div>
+<div id="speakers" class="testSection">
+    <button onclick="testSpeakers()">Lautsprechertest</button>
+    <div id="speakersOutput"></div>
+</div>
+
+
 
 <script src="script.js"></script>
-
 </body>
 </html>
