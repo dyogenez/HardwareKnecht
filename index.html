@@ -5,9 +5,9 @@
 <title>Hardware Check</title>
 <style>
     body {
-        font-family: "Benton Sans", sans-serif; /* Verwendung einer modernen Schriftart */
-        background-color: #1f2021; /* Dunkler Hintergrund für alle Seiten */
-        color: white; /* Text in Weiß für guten Kontrast */
+        font-family: "Benton Sans", sans-serif;
+        background-color: #1f2021;
+        color: white;
         margin: 0;
         padding: 0;
         display: flex;
@@ -16,38 +16,44 @@
     }
     
     h1 {
-        color: white; /* Titelfarbe */
+        color: white;
         padding: 20px;
     }
     
-    #nav button {
-        background-color: #ff6700; /* Hauptfarbe für Buttons */
-        border: none;
-        color: white;
-        padding: 10px 20px;
-        margin: 10px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
+  
+
+
+    button, select {
+        background-color: #ff6700; /* Orangene Farbe für Buttons und Auswahlfelder */
+        color: white; /* Weißer Text auf orangenem Hintergrund */
+        padding: 10px 20px; /* Ausreichend Polsterung */
+        margin: 10px; /* Einheitlicher Abstand rundherum */
+        border: none; /* Keine Rahmen */
+        border-radius: 5px; /* Leicht abgerundete Ecken */
+        cursor: pointer; /* Cursor ändert sich beim Überfahren */
+        transition: background-color 0.3s; /* Weiche Farbübergänge */
     }
     
+
+    
     #nav button:hover {
-        background-color: #e65c00; /* Dunklerer Ton beim Hover */
+        background-color: #e65c00;
+        transform: scale(1.05);
     }
     
     .testSection {
-        display: none; /* Initial nicht sichtbar */
+        display: none;
         padding: 20px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         width: 80%;
         max-width: 800px;
-        background: #282c34; /* Dunkles Thema für Sektionen */
+        background: #282c34;
         border-radius: 10px;
         margin-top: 20px;
     }
     
     #keyboard {
-        display: none; /* Nur im Keyboard-Tab sichtbar */
+        display: none;
         flex-direction: column;
         align-items: center;
         margin-top: 20px;
@@ -62,12 +68,11 @@
         border-radius: 3px;
         cursor: pointer;
         user-select: none;
-        transition: transform 0.1s, background-color 0.3s;
+        transition: background-color 0.3s, transform 0.1s;
     }
     
     .key.active {
-        transform: scale(0.95);
-        background-color: #ff6700; /* Orange für aktive Tasten */
+        background-color: #ff6700;
         color: white;
     }
     
@@ -80,37 +85,36 @@
         flex-grow: 2;
     }
     
-    #cameraOutput {
-        width: 640px;
-        height: 480px;
+  
+    #cameraOutput, #audioOutput {
+        
+        width: 100%;
+        max-width: 640px;
+        height: auto;
         object-fit: cover;
-    }
-
-    #audioOutput {
-        width: 100%; /* Vollbreite für den Audio-Player */
-        background-color: #ff6700; /* Orange Hintergrund */
-        border: none;
-        outline: none;
-        height: 20px;
-        border-radius: 10px;
+        border-radius: 8px;
     }
     
     #audioOutput::-webkit-media-controls-panel {
         background-color: #ff6700; /* Stil für den Audio Player */
         color: white;
     }
+
     
-    #audioOutput::-webkit-media-controls-play-button,
-    #audioOutput::-webkit-media-controls-volume-slider-container,
-    #audioOutput::-webkit-media-controls-mute-button,
-    #audioOutput::-webkit-media-controls-timeline-container {
-        color: white;
+
+    #audioOutput {
+        background-color: #ff6700;
+        border: none;
+        outline: none;
+        height: 20px;
+        border-radius: 10px;
     }
     
     button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
+        opacity: 0.5; /* Halbtransparent, wenn deaktiviert */
+        cursor: not-allowed; /* Cursor zeigt 'nicht erlaubt' Zeichen */
     }
+    
  
 </style>
 </head>
