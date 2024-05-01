@@ -22,6 +22,46 @@ document.getElementById('startCamera').addEventListener('click', function() {
     updateVideoStream(); // Aktiviert die Kamera nur auf Knopfdruck
 });
 
+
+
+function showSection(sectionId) {
+    const sections = document.querySelectorAll('.testSection');
+    sections.forEach(section => section.style.display = 'none');
+
+    const activeSection = document.getElementById(sectionId);
+    activeSection.style.display = 'block';
+    currentTab = sectionId; // Setze den aktuellen Tab
+
+    if (sectionId === 'keyboard') {
+        document.addEventListener('keydown', handleKeyDown);
+    } else {
+        document.removeEventListener('keydown', handleKeyDown);
+    }
+
+    // Spezielle Logik für Mikrofon und Kamera
+    if (sectionId === 'microphone') {
+        document.getElementById('microphoneOutput').style.display = 'block';
+        updateAudioInput();
+    }
+}
+
+function handleKeyDown(e) {
+    const keyElement = document.querySelector(`.key[data-key="${e.code}"]`);
+    if (keyElement) keyElement.classList.add('active');
+}
+
+// Rufe showSection initial auf, um den Start-Tab festzulegen
+document.addEventListener('DOMContentLoaded', function() {
+   
+});
+
+// Aktivierung der Kamera nur durch Button-Klick
+document.getElementById('startCamera').addEventListener('click', function() {
+    document.getElementById('cameraOutput').style.display = 'block'; // Stelle sicher, dass das Video-Element sichtbar ist
+    updateVideoStream();
+});
+
+
 function setupDevices(stream) {
     navigator.mediaDevices.enumerateDevices()
     .then(devices => {
@@ -61,26 +101,27 @@ document.getElementById('startCamera').addEventListener('click', function() {
 function updateVideoStream() {
     const cameraSelect = document.getElementById('cameraSelect');
     const videoOutput = document.getElementById('cameraOutput');
-
-    if (currentStream) {
-        // Vor dem Neustarten des Streams werden alle alten Tracks gestoppt.
-        currentStream.getTracks().forEach(track => track.stop());
-    }
-
     const constraints = {
         video: { deviceId: cameraSelect.value ? { exact: cameraSelect.value } : undefined }
     };
 
     navigator.mediaDevices.getUserMedia(constraints)
     .then(stream => {
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+        }
         currentStream = stream;
         videoOutput.srcObject = currentStream;
         videoOutput.play();
     })
     .catch(error => {
-        console.error('Fehler beim Zugriff auf die Kamera:', error);
+        console.error('Error accessing the camera:', error);
     });
 }
+
+
+// Event Listener in JavaScript hinzufügen
+document.getElementById('startCamera').addEventListener('click', updateVideoStream);
 
 
 
@@ -89,38 +130,48 @@ function updateVideoStream() {
 
 function updateAudioInput() {
     const microphoneSelect = document.getElementById('microphoneSelect');
-    const constraints = { audio: { deviceId: microphoneSelect.value ? { exact: microphoneSelect.value } : undefined } };
+    const constraints = { audio: { deviceId: microphoneSelect.value ? { exact: microphoneSelect.value } : undefined }};
+
+    // Stelle sicher, dass alle bestehenden Tracks gestoppt werden, bevor du einen neuen Stream anforderst.
+    if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+    }
+
     navigator.mediaDevices.getUserMedia(constraints)
     .then(stream => {
-        if (currentStream) {
-            currentStream.getTracks().forEach(track => track.stop());
-        }
-        currentStream = stream;
+        currentStream = stream; // Aktualisiere den aktuellen Stream
         if (source) {
-            source.disconnect();
+            source.disconnect(); // Trenne die alte Quelle, falls vorhanden
         }
-        source = audioContext.createMediaStreamSource(stream);
-        source.connect(analyser);
+        setupAudioVisualizer(stream); // Setze den Audio Visualizer mit dem neuen Stream auf
     })
     .catch(error => {
         console.error('Fehler beim Zugriff auf das Mikrofon:', error);
     });
 }
 
+
+
 function setupAudioVisualizer(stream) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioContext.createAnalyser();
-    analyser.fftSize = 2048;
-    const bufferLength = analyser.frequencyBinCount;
-    dataArray = new Uint8Array(bufferLength);
+    // Initialisiere oder benutze den bestehenden AudioContext
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    source = audioContext.createMediaStreamSource(stream); // Erstelle eine neue Quelle aus dem Stream
+    if (!analyser) {
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 2048;
+    }
+    source.connect(analyser);
+    updateVisualizer(); // Funktion, die den Visualizer aktualisiert
+}
+
+
+function updateVisualizer() {
     const canvas = document.getElementById('microphoneOutput');
     const canvasCtx = canvas.getContext('2d');
-
-    if (source) {
-        source.disconnect();
-    }
-    source = audioContext.createMediaStreamSource(stream);
-    source.connect(analyser);
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
 
     function draw() {
         requestAnimationFrame(draw);
@@ -130,12 +181,13 @@ function setupAudioVisualizer(stream) {
         canvasCtx.lineWidth = 2;
         canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
         canvasCtx.beginPath();
+
         let sliceWidth = canvas.width * 1.0 / bufferLength;
         let x = 0;
-        for(let i = 0; i < bufferLength; i++) {
+        for (let i = 0; i < bufferLength; i++) {
             let v = dataArray[i] / 128.0;
             let y = v * canvas.height / 2;
-            if(i === 0) {
+            if (i === 0) {
                 canvasCtx.moveTo(x, y);
             } else {
                 canvasCtx.lineTo(x, y);
@@ -145,11 +197,35 @@ function setupAudioVisualizer(stream) {
         canvasCtx.lineTo(canvas.width, canvas.height / 2);
         canvasCtx.stroke();
     }
-    draw();
+
+    draw(); // Starte die Visualisierung
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('keydown', function (e) {
+        e.preventDefault();  // Verhindert Standardverhalten und Doppelbelegungen
+        const keyElement = document.querySelector(`.key[data-key="${e.code}"]`);
+        if (keyElement && !keyElement.classList.contains('active')) {
+            keyElement.classList.add('active');  // Markiert die Taste
+        }
+    });
+    // Kein 'keyup' Event zum Entfernen der Klasse, da Tasten markiert bleiben sollen
+});
+
+// Verwalte Tastaturereignisse nur, wenn der Tastatur-Tab aktiv ist
+document.addEventListener('keydown', function(e) {
+    if (currentTab !== 'keyboard') return; // Ignoriere Tastenanschläge, wenn nicht im Tastatur-Tab
+    const keyElement = document.querySelector(`.key[data-key="${e.code}"]`);
+    if (keyElement) keyElement.classList.add('active');
+});
+
+
+
 
 function startRecording() {
     mediaRecorder = new MediaRecorder(currentStream);
+    audioChunks = [];
+
     mediaRecorder.ondataavailable = event => {
         audioChunks.push(event.data);
     };
@@ -161,12 +237,13 @@ function startRecording() {
 function stopRecording() {
     mediaRecorder.stop();
     mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { 'type' : 'audio/ogg; codecs=opus' });
+        const audioBlob = new Blob(audioChunks, { 'type': 'audio/ogg; codecs=opus' });
         const audioUrl = URL.createObjectURL(audioBlob);
         const audio = document.getElementById('audioOutput');
         audio.src = audioUrl;
         document.getElementById('stopRecording').disabled = true;
         document.getElementById('startRecording').disabled = false;
-        audioChunks = [];
+        audio.play(); // Starte die Wiedergabe der Aufnahme
+        document.getElementById('audioOutput').style.display = 'block'; // Stelle sicher, dass der Audio-Player sichtbar ist
     };
 }
