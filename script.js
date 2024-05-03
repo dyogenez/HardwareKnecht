@@ -22,23 +22,29 @@ document.getElementById('startCamera').addEventListener('click', function() {
     updateVideoStream(); // Aktiviert die Kamera nur auf Knopfdruck
 });
 
-
 function showSection(sectionId) {
     const sections = document.querySelectorAll('.testSection');
     sections.forEach(section => {
-        section.style.display = 'none';
+        if (section.id !== sectionId) {
+            section.classList.remove('show'); // Entferne die Klasse 'show' sofort
+            setTimeout(() => {
+                section.style.display = 'none'; // Verzögere das Ausblenden, um den Übergang zu ermöglichen
+            }, 0); // Warte die Dauer der Opazitäts-Transition
+        }
     });
 
-    const activeSection = document.getElementById(sectionId);
-    activeSection.style.display = 'block';
+    
 
-    // Sorgt dafür, dass Tastatureingaben nur im Keyboard-Tab registriert werden
-    if (sectionId === 'keyboard') {
-        document.addEventListener('keydown', handleKeyDown);
-    } else {
-        document.removeEventListener('keydown', handleKeyDown);
+    const activeSection = document.getElementById(sectionId);
+    if (!activeSection.classList.contains('show')) {
+        activeSection.style.display = 'block'; // Stelle sicher, dass der Bereich blockiert wird, bevor die Klasse 'show' hinzugefügt wird
+        setTimeout(() => {
+            activeSection.classList.add('show'); // Füge die Klasse 'show' hinzu, um den Bereich einzublenden
+        }, 10); // Verzögere leicht, um CSS-Applikation zu erlauben
     }
 }
+
+
 
 
 
@@ -218,6 +224,32 @@ document.addEventListener('keydown', function(e) {
     const keyElement = document.querySelector(`.key[data-key="${e.code}"]`);
     if (keyElement) keyElement.classList.add('active');
 });
+
+
+navigator.getBattery().then(function(battery) {
+    function updateBatteryInfo() {
+        document.getElementById('batteryLevel').textContent = (battery.level * 100).toFixed(0);
+        document.getElementById('chargingStatus').textContent = battery.charging ? 'Ladend' : 'Nicht ladend';
+        document.getElementById('chargingTime').textContent = battery.chargingTime ? battery.chargingTime + ' Minuten' : 'N/A';
+        document.getElementById('dischargingTime').textContent = battery.dischargingTime ? battery.dischargingTime + ' Minuten' : 'N/A';
+    }
+
+    updateBatteryInfo();
+
+    battery.addEventListener('chargingchange', function() {
+        updateBatteryInfo();
+    });
+    battery.addEventListener('levelchange', function() {
+        updateBatteryInfo();
+    });
+    battery.addEventListener('chargingtimechange', function() {
+        updateBatteryInfo();
+    });
+    battery.addEventListener('dischargingtimechange', function() {
+        updateBatteryInfo();
+    });
+});
+
 
 
 
