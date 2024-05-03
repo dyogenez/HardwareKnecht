@@ -108,7 +108,11 @@ function updateVideoStream() {
     const cameraSelect = document.getElementById('cameraSelect');
     const videoOutput = document.getElementById('cameraOutput');
     const constraints = {
-        video: { deviceId: cameraSelect.value ? { exact: cameraSelect.value } : undefined }
+        video: {
+            deviceId: cameraSelect.value ? { exact: cameraSelect.value } : undefined,
+            width: { exact: 640 },  // Festgelegte Breite
+            height: { exact: 480 }  // Festgelegte Höhe
+        }
     };
 
     navigator.mediaDevices.getUserMedia(constraints)
@@ -121,7 +125,7 @@ function updateVideoStream() {
         videoOutput.play();
     })
     .catch(error => {
-        console.error('Error accessing the camera:', error);
+        console.error('Fehler beim Zugriff auf die Kamera:', error);
     });
 }
 
