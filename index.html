@@ -50,6 +50,14 @@
         background: #282c34;
         border-radius: 10px;
         margin-top: 20px;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        will-change: opacity;
+    }
+
+    .testSection.show {
+        opacity: 1;
+        display: block; /* Block statt 'none' */
     }
     
     #keyboard {
@@ -109,6 +117,11 @@
         height: 20px;
         border-radius: 10px;
     }
+
+    button:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    }
     
     button:disabled {
         opacity: 0.5; /* Halbtransparent, wenn deaktiviert */
@@ -119,6 +132,31 @@
         margin-top: -77px;
         z-index: -1; /* Stelle sicher, dass das Bild über dem Text liegt */
         opacity: 1; /* Anpassen der Transparenz nach Bedarf */
+    }
+
+    #batteryInfo {
+        background-color: #333;  /* Dunkler Hintergrund für den Akkubereich */
+        color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px auto;
+        width: 90%;
+        max-width: 600px;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    #batteryInfo:hover {
+        transform: translateY(-5px);  /* Leichte Bewegung nach oben beim Hover */
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    .battery-detail {
+        margin-top: 10px;
+        font-size: 1.2rem;
+    }
+    
+    .battery-detail strong {
+        color: #ff6700;  /* Orangene Highlights für Schlüsselwerte */
     }
     
  
@@ -133,6 +171,18 @@
     <button onclick="showSection('microphone')">Mikrofontest</button>
     <button onclick="showSection('speakers')">Lautsprechertest</button>
     <button onclick="showSection('keyboard')">Tastaturtest</button>
+    <button onclick="showSection('battery')">Akkutest</button>
+</div>
+
+<!-- Akkutest -->
+<div id="battery" class="testSection">
+    <h2>Akkutest</h2>
+    <div id="batteryInfo">
+        <p id="batteryStatus">Akkustatus: <span id="batteryLevel"></span>%</p>
+        <p class="battery-detail">Ladestatus: <strong id="chargingStatus"></strong></p>
+        <p class="battery-detail">Verbleibende Ladezeit: <strong id="chargingTime"></strong></p>
+        <p class="battery-detail">Entladezeit: <strong id="dischargingTime"></strong></p>
+    </div>
 </div>
 
 <!-- Kameratest -->
@@ -144,6 +194,7 @@
 
 <!-- Mikrofontest -->
 <div id="microphone" class="testSection">
+
     <select id="microphoneSelect"></select>
     <div id="controls">
         <button id="startRecording" onclick="startRecording()">Aufnahme starten</button>
