@@ -230,6 +230,9 @@ document.addEventListener('keydown', function(e) {
 });
 
 
+
+
+
 navigator.getBattery().then(function(battery) {
     function updateBatteryInfo() {
         document.getElementById('batteryLevel').textContent = (battery.level * 100).toFixed(0);
@@ -255,6 +258,21 @@ navigator.getBattery().then(function(battery) {
 });
 
 
+
+
+document.addEventListener('keydown', function(e) {
+    // Liste der Tasten, deren Standardaktionen blockiert werden sollen
+    const blockedKeys = ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12', 'Tab', 'Escape', 'Meta'];
+
+    if (blockedKeys.includes(e.key)) {
+        e.preventDefault();  // Verhindert Standardverhalten der Tasten
+        // Optional: Code zum Hervorheben der gedrückten Taste auf der Webseite
+        const keyElement = document.querySelector(`.key[data-key="${e.key}"]`);
+        if (keyElement) {
+            keyElement.classList.add('active');
+        }
+    }
+});
 
 
 
